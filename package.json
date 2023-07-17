@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "json-searcher.helloWorld",
-        "title": "Hello World"
+        "command": "json-searcher.searchPathOnCurrentJSON",
+        "title": "Search Path on Current JSON"
       }
     ]
   },
