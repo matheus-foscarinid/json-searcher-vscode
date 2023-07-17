@@ -30,10 +30,9 @@ const findLineForJSONPath = (jsonString: string, path: string) => {
 
 	const pathArray = path.split('.');
 	let currentPath = pathArray.shift();
-	
+
 	const lines = jsonString.split('\r\n');
   let lineNumber = null;
-
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -51,63 +50,65 @@ const findLineForJSONPath = (jsonString: string, path: string) => {
   return lineNumber;
 };
 
-export const activate = (context: vscode.ExtensionContext) => {
-	const disposable = vscode.commands.registerCommand('json-searcher.searchPathOnCurrentJSON', async () => {
-		const filterString = await vscode.window.showInputBox({
-			placeHolder: 'Enter the path to search',
-			validateInput: (text: string) => {
-				if (!text) {
-					return 'Please enter a path';
-				}
-
-				// Validate if the path is valid
-				const pathRegex = /^(\w+\.)*\w+$/;
-				const isValidPath = pathRegex.test(text);
-
-				if (!isValidPath) {
-					return 'Please enter a valid path';
-				}
-
-				return '';
+const searchPathOnCurrentJSON = async () => {
+	const filterString = await vscode.window.showInputBox({
+		placeHolder: 'Enter the path to search',
+		validateInput: (text: string) => {
+			if (!text) {
+				return 'Please enter a path';
 			}
-		});
 
-		// Get current file content
-		const editor = vscode.window.activeTextEditor;
-		console.log(editor);
+			// Validate if the path is valid
+			const pathRegex = /^(\w+\.)*\w+$/;
+			const isValidPath = pathRegex.test(text);
 
-		// Check if the current file is a JSON
-		if (!editor?.document.fileName.endsWith('.json')) {
-			vscode.window.showErrorMessage('The current file is not a JSON');
-			return;
+			if (!isValidPath) {
+				return 'Please enter a valid path';
+			}
+
+			return '';
 		}
-
-		// Get current file content as JSON
-		const currentFileContent = editor?.document.getText();
-		console.log(currentFileContent);
-
-		// Find the line number for the path
-		const line = findLineForJSONPath(currentFileContent!, filterString!);
-		console.log(line);
-
-		if (line === null) {
-			vscode.window.showErrorMessage('The path was not found on the current JSON');
-			return;
-		}
-
-		// Get start and end position for the path on line
-		const lineContent = currentFileContent?.split('\r\n')[line];
-		const lastPathKey = filterString?.split('.').pop();
-
-		const pathPosition = lineContent?.indexOf(lastPathKey!);
-		const startPosition = new vscode.Position(line, pathPosition);
-		const endPosition = new vscode.Position(line, pathPosition + lastPathKey!.length);
-
-		vscode.window.showTextDocument(editor?.document.uri, {
-			preview: false,
-			selection: new vscode.Range(startPosition, endPosition)
-		});
 	});
+
+	// Get current file content
+	const editor = vscode.window.activeTextEditor;
+	console.log(editor);
+
+	// Check if the current file is a JSON
+	if (!editor?.document.fileName.endsWith('.json')) {
+		vscode.window.showErrorMessage('The current file is not a JSON');
+		return;
+	}
+
+	// Get current file content as JSON
+	const currentFileContent = editor?.document.getText();
+	console.log(currentFileContent);
+
+	// Find the line number for the path
+	const line = findLineForJSONPath(currentFileContent!, filterString!);
+	console.log(line);
+
+	if (line === null) {
+		vscode.window.showErrorMessage('The path was not found on the current JSON');
+		return;
+	}
+
+	// Get start and end position for the path on line
+	const lineContent = currentFileContent?.split('\r\n')[line];
+	const lastPathKey = filterString?.split('.').pop();
+
+	const pathPosition = lineContent?.indexOf(lastPathKey!);
+	const startPosition = new vscode.Position(line, pathPosition);
+	const endPosition = new vscode.Position(line, pathPosition + lastPathKey!.length);
+
+	vscode.window.showTextDocument(editor?.document.uri, {
+		preview: false,
+		selection: new vscode.Range(startPosition, endPosition)
+	});
+};
+
+export const activate = (context: vscode.ExtensionContext) => {
+	const disposable = vscode.commands.registerCommand('json-searcher.searchPathOnCurrentJSON', searchPathOnCurrentJSON);
 
 	context.subscriptions.push(disposable);
 };
