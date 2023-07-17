@@ -15,16 +15,20 @@ const getValueFromJSONPath = (json: object, path: string) => {
   return current;
 };
 
-const findLineForJSONPath = (jsonString: string, path: string) => {
+const isValidJSON = (jsonString: string) => {
 	try {
-		const json = JSON.parse(jsonString);
-		const hasPathOnJSON = !!getValueFromJSONPath(json, path);
-	
-		if (!hasPathOnJSON) {
-			return null;
-		}
+		JSON.parse(jsonString);
+		return true;
 	} catch {
-		vscode.window.showErrorMessage('The current file is not a valid JSON');
+		return false;
+	}
+};
+
+const findLineForJSONPath = (jsonString: string, path: string) => {
+	const json = JSON.parse(jsonString);
+	const hasPathOnJSON = !!getValueFromJSONPath(json, path);
+
+	if (!hasPathOnJSON) {
 		return null;
 	}
 
@@ -87,6 +91,13 @@ const searchPathOnCurrentJSON = async () => {
 	}
 
 	const currentFileContent = editor?.document.getText()!;
+	const isJSONValid = isValidJSON(currentFileContent);
+	
+	if (!isJSONValid) {
+		vscode.window.showErrorMessage('The current file is not a valid JSON');
+		return;
+	}
+
 	const line = findLineForJSONPath(currentFileContent, filterString!);
 
 	if (line === null) {
