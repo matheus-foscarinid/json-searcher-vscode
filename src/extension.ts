@@ -72,10 +72,15 @@ const searchPathOnCurrentJSON = async () => {
 
 	// Get current file content
 	const editor = vscode.window.activeTextEditor;
-	console.log(editor);
 
-	// Check if the current file is a JSON
-	if (!editor?.document.fileName.endsWith('.json')) {
+	if (!editor) {
+		vscode.window.showErrorMessage('No active editor found');
+		return;
+	}
+
+	const currentFileIsJSON = editor?.document.fileName.endsWith('.json');
+
+	if (!currentFileIsJSON) {
 		vscode.window.showErrorMessage('The current file is not a JSON');
 		return;
 	}
