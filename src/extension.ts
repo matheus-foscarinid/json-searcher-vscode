@@ -16,18 +16,24 @@ const getValueFromJSONPath = (json: object, path: string) => {
 };
 
 const findLineForJSONPath = (jsonString: string, path: string) => {
-	const json = JSON.parse(jsonString);
-	const pathArray = path.split('.');
-	const hasPathOnJSON = !!getValueFromJSONPath(json, path);
-
-	if (!hasPathOnJSON) {
+	try {
+		const json = JSON.parse(jsonString);
+		const hasPathOnJSON = !!getValueFromJSONPath(json, path);
+	
+		if (!hasPathOnJSON) {
+			return null;
+		}
+	} catch {
+		vscode.window.showErrorMessage('The current file is not a valid JSON');
 		return null;
 	}
 
-	const lines = jsonString.split('\r\n');
-
-  let lineNumber = null;
+	const pathArray = path.split('.');
 	let currentPath = pathArray.shift();
+	
+	const lines = jsonString.split('\r\n');
+  let lineNumber = null;
+
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
