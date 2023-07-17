@@ -50,27 +50,28 @@ const findLineForJSONPath = (jsonString: string, path: string) => {
   return lineNumber;
 };
 
+const validatePath = (text: string) => {
+	if (!text) {
+		return 'Please enter a path';
+	}
+
+	// Validate if the path is valid
+	const pathRegex = /^(\w+\.)*\w+$/;
+	const isValidPath = pathRegex.test(text);
+
+	if (!isValidPath) {
+		return 'Please enter a valid path';
+	}
+
+	return '';
+};
+
 const searchPathOnCurrentJSON = async () => {
 	const filterString = await vscode.window.showInputBox({
 		placeHolder: 'Enter the path to search',
-		validateInput: (text: string) => {
-			if (!text) {
-				return 'Please enter a path';
-			}
-
-			// Validate if the path is valid
-			const pathRegex = /^(\w+\.)*\w+$/;
-			const isValidPath = pathRegex.test(text);
-
-			if (!isValidPath) {
-				return 'Please enter a valid path';
-			}
-
-			return '';
-		}
+		validateInput: validatePath
 	});
 
-	// Get current file content
 	const editor = vscode.window.activeTextEditor;
 
 	if (!editor) {
@@ -85,28 +86,22 @@ const searchPathOnCurrentJSON = async () => {
 		return;
 	}
 
-	// Get current file content as JSON
-	const currentFileContent = editor?.document.getText();
-	console.log(currentFileContent);
-
-	// Find the line number for the path
-	const line = findLineForJSONPath(currentFileContent!, filterString!);
-	console.log(line);
+	const currentFileContent = editor?.document.getText()!;
+	const line = findLineForJSONPath(currentFileContent, filterString!);
 
 	if (line === null) {
 		vscode.window.showErrorMessage('The path was not found on the current JSON');
 		return;
 	}
 
-	// Get start and end position for the path on line
-	const lineContent = currentFileContent?.split('\r\n')[line];
+	const lineContent = currentFileContent.split('\r\n')[line];
 	const lastPathKey = filterString?.split('.').pop();
 
 	const pathPosition = lineContent?.indexOf(lastPathKey!);
 	const startPosition = new vscode.Position(line, pathPosition);
 	const endPosition = new vscode.Position(line, pathPosition + lastPathKey!.length);
 
-	vscode.window.showTextDocument(editor?.document.uri, {
+	vscode.window.showTextDocument(editor.document.uri, {
 		preview: false,
 		selection: new vscode.Range(startPosition, endPosition)
 	});
