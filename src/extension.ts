@@ -1,19 +1,48 @@
 import * as vscode from 'vscode';
 
-const findLineForJSONPath = (jsonString: string, path: string) => {
-  const lines = jsonString.split('\r\n');
-  let currentLine = 0;
-  let pathLine = null;
+const getValueFromJSONPath = (json: object, path: string) => {
+  const pathArray = path.split('.');
+  let current: any = json;
 
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].includes(path)) {
-      pathLine = currentLine + 1; // O número da linha é incrementado em 1, pois começa em 1 em vez de 0
-      break;
+  for (const key of pathArray) {
+    if (current && typeof current === 'object' && key in current) {
+      current = current[key];
+    } else {
+      return undefined;
     }
-    currentLine += 1;
   }
 
-  return pathLine;
+  return current;
+};
+
+const findLineForJSONPath = (jsonString: string, path: string) => {
+	const json = JSON.parse(jsonString);
+	const pathArray = path.split('.');
+	const hasPathOnJSON = !!getValueFromJSONPath(json, path);
+
+	if (!hasPathOnJSON) {
+		return null;
+	}
+
+	const lines = jsonString.split('\r\n');
+
+  let lineNumber = null;
+	let currentPath = pathArray.shift();
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    if (line.includes(`"${currentPath}":`)) {
+			lineNumber = i;
+			currentPath = pathArray.shift();
+
+			if (!currentPath) {
+				break;
+			}
+    }
+  }
+
+  return lineNumber;
 };
 
 export const activate = (context: vscode.ExtensionContext) => {
@@ -37,16 +66,41 @@ export const activate = (context: vscode.ExtensionContext) => {
 			}
 		});
 
-		// Get current current file content
+		// Get current file content
 		const editor = vscode.window.activeTextEditor;
 		console.log(editor);
+
+		// Check if the current file is a JSON
+		if (!editor?.document.fileName.endsWith('.json')) {
+			vscode.window.showErrorMessage('The current file is not a JSON');
+			return;
+		}
 
 		// Get current file content as JSON
 		const currentFileContent = editor?.document.getText();
 		console.log(currentFileContent);
 
+		// Find the line number for the path
 		const line = findLineForJSONPath(currentFileContent!, filterString!);
 		console.log(line);
+
+		if (line === null) {
+			vscode.window.showErrorMessage('The path was not found on the current JSON');
+			return;
+		}
+
+		// Get start and end position for the path on line
+		const lineContent = currentFileContent?.split('\r\n')[line];
+		const lastPathKey = filterString?.split('.').pop();
+
+		const pathPosition = lineContent?.indexOf(lastPathKey!);
+		const startPosition = new vscode.Position(line, pathPosition);
+		const endPosition = new vscode.Position(line, pathPosition + lastPathKey!.length);
+
+		vscode.window.showTextDocument(editor?.document.uri, {
+			preview: false,
+			selection: new vscode.Range(startPosition, endPosition)
+		});
 	});
 
 	context.subscriptions.push(disposable);
