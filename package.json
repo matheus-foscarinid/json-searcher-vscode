@@ -1,7 +1,7 @@
 {
   "name": "json-searcher",
   "displayName": "JSON Searcher",
-  "description": "JSON Searcher is a powerful tool for searching within JSON files, particularly useful for locating data in i18n (internationalization) files. Easily find and navigate to specific data within your JSON files using the provided path. Simplify your JSON searching and streamline your i18n file management with JSON Searcher.",
+  "description": "JSON Searcher is a simple VSCode extension for searching within JSON files, particularly useful for locating data in i18n (internationalization) files. Easily find and navigate to specific data within your JSON files using the provided path. Simplify your JSON searching and streamline your i18n file management with JSON Searcher.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.80.0"
