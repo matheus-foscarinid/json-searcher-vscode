@@ -76,6 +76,10 @@ const searchPathOnCurrentJSON = async () => {
 		validateInput: validatePath
 	});
 
+	if (!filterString) {
+		return;
+	}
+
 	const editor = vscode.window.activeTextEditor;
 
 	if (!editor) {
