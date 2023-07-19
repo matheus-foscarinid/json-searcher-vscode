@@ -28,8 +28,8 @@ Accepting contributions, feedback and sugestions.
 ## TODOs 📝
 
 - [x] Add support for searching within a single file
-- [ ] Add support to complex paths (e.g. `path[0].to[1].data`)
-- [ ] Save last searched path
+- [x] Save last searched path
 - [ ] Add right-click context menu option to search for path
+- [ ] Add support to complex paths (e.g. `path[0].to[1].data`)
 - [ ] Add support for searching within multiple files (maybe)
 

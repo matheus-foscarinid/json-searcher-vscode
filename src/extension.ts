@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 
+let lastPathSearched = '';
+
 const getValueFromJSONPath = (json: object, path: string) => {
   const pathArray = path.split('.');
   let current: any = json;
@@ -73,13 +75,15 @@ const validatePath = (text: string) => {
 const searchPathOnCurrentJSON = async () => {
 	const filterString = await vscode.window.showInputBox({
 		placeHolder: 'Enter the path to search',
-		validateInput: validatePath
+		validateInput: validatePath,
+		value: lastPathSearched
 	});
 
 	if (!filterString) {
 		return;
 	}
 
+	lastPathSearched = filterString;
 	const editor = vscode.window.activeTextEditor;
 
 	if (!editor) {
