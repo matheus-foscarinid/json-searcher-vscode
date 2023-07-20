@@ -29,7 +29,11 @@ Accepting contributions, feedback and sugestions.
 
 - [x] Add support for searching within a single file
 - [x] Save last searched path
+- [x] Release on VSCode marketplace
+- [ ] Add a changelog
+- [ ] Add the license
 - [ ] Add right-click context menu option to search for path
 - [ ] Add support to complex paths (e.g. `path[0].to[1].data`)
 - [ ] Add support for searching within multiple files (maybe)
+- [ ] Add support for searching within all files in a folder (maybe)
 
