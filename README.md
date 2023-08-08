@@ -27,6 +27,7 @@ Accepting contributions, feedback and sugestions.
 
 ## TODOs 📝
 
+- [ ] Fix searching on Mac OS 🪲
 - [x] Add support for searching within a single file
 - [x] Save last searched path
 - [x] Release on VSCode marketplace
