@@ -26,7 +26,7 @@ const isValidJSON = (jsonString: string) => {
 	}
 };
 
-const findLineForJSONPath = (jsonString: string, path: string) => {
+const findLineForJSONPath = (jsonString: string, path: string, eol: '\n' | '\r\n') => {
 	const json = JSON.parse(jsonString);
 	const hasPathOnJSON = !!getValueFromJSONPath(json, path);
 
@@ -37,7 +37,7 @@ const findLineForJSONPath = (jsonString: string, path: string) => {
 	const pathArray = path.split('.');
 	let currentPath = pathArray.shift();
 
-	const lines = jsonString.split('\r\n');
+	const lines = jsonString.split(eol);
   let lineNumber = null;
 
   for (let i = 0; i < lines.length; i++) {
@@ -106,14 +106,16 @@ const searchPathOnCurrentJSON = async () => {
 		return;
 	}
 
-	const line = findLineForJSONPath(currentFileContent, filterString!);
+	const eolOptions = vscode.EndOfLine;
+	const currentFileEOL = editor.document.eol === eolOptions.LF ? '\n' : '\r\n';
+	const line = findLineForJSONPath(currentFileContent, filterString, currentFileEOL);
 
 	if (line === null) {
 		vscode.window.showErrorMessage('The path was not found on the current JSON');
 		return;
 	}
 
-	const lineContent = currentFileContent.split('\r\n')[line];
+	const lineContent = currentFileContent.split(currentFileEOL)[line];
 	const lastPathKey = filterString?.split('.').pop();
 
 	const pathPosition = lineContent?.indexOf(lastPathKey!);
