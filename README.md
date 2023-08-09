@@ -20,8 +20,8 @@ I had a need for a simple extension that would allow me to quickly navigate to s
 
 ## Disclaimers ⚠️
 
-This is a WIP extension. It is not yet available on the VSCode marketplace, and It is not yet fully functional.
-While the extension is functional, it is not yet fully tested and may contain bugs. Use at your own risk.
+This is a WIP extension. It's available on VSCode marketplace, but it's not yet fully tested and may contain some bugs. 
+You can help by contributing or reporting problems here!
 
 Accepting contributions, feedback and sugestions.
 
