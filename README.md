@@ -29,7 +29,7 @@ Accepting contributions, feedback and sugestions.
 ## TODOs 📝
 
 - [x] Fix searching on Mac OS 🪲
-- [ ] Fix searching with special Chars
+- [x] Fix searching with special Chars
 - [x] Add support for searching within a single file
 - [x] Save last searched path
 - [x] Release on VSCode marketplace
