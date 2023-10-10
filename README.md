@@ -29,12 +29,14 @@ Accepting contributions, feedback and sugestions.
 ## TODOs 📝
 
 - [x] Fix searching on Mac OS 🪲
+- [ ] Fix searching on multi levels array where the same key appear before the correct one 🪲
 - [x] Fix searching with special Chars
 - [x] Add support for searching within a single file
 - [x] Save last searched path
 - [x] Release on VSCode marketplace
 - [ ] Add a changelog
 - [ ] Add the license
+- [ ] Add unity tests
 - [ ] Add right-click context menu option to search for path
 - [ ] Add support to complex paths (e.g. `path[0].to[1].data`)
 - [ ] Add support for searching within multiple files (maybe)
